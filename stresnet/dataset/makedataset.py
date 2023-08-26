@@ -10,7 +10,7 @@ from torch.utils.data import TensorDataset
 
 
 def get_dataset(
-    data_files: list[str],
+    data_files: 'list[str]',
     holiday_file: str,
     meteorol_file: str,
     T: int,
@@ -23,7 +23,7 @@ def get_dataset(
     use_meta: bool,
     map_height: int,
     map_width: int
-) -> tuple[TensorDataset, TensorDataset, Any, Optional[int]]:
+) -> 'tuple[TensorDataset, TensorDataset, Any, Optional[int]]':
     mkdata = MakeDataset(
         data_files=data_files,
         holiday_file=holiday_file,
@@ -77,7 +77,7 @@ class MakeDataset(LoadData):
         use_meta: bool,
         map_height: int,
         map_width: int
-    ) -> dict[str, Any]:
+    ) -> 'dict[str, Any]':
         main_data = self._create_main_data(
             T,
             len_closeness,
@@ -180,7 +180,7 @@ class MakeDataset(LoadData):
         len_test: int,
         map_height: int,
         map_width: int
-    ) -> dict[str, Any]:
+    ) -> 'dict[str, Any]':
         data_all, timestamp_all = self.load_data(T=T)
         data_train = np.vstack(data_all)[:-len_test]
 

@@ -11,7 +11,7 @@ current_dir = Path(__file__).resolve().parent
 
 @dataclass
 class LoadData:
-    data_files: list[str]
+    data_files: 'list[str]'
     holiday_file: str
     meteorology_file: str
 
@@ -79,7 +79,7 @@ class LoadData:
 
     def _remove_incomplete_days(
         self, dat: tables.file.File, T: int
-    ) -> tuple[np.ndarray, np.ndarray]:
+    ) -> 'tuple[np.ndarray, np.ndarray]':
         # 20140425 has 24 timestamps, which does not appear in `incomplete_days` in the original implementation.
         # So I reimplemented it in a different way.
         data = dat.root.data.read()
@@ -101,7 +101,7 @@ class LoadData:
         new_timestamps = np.delete(timestamps, del_idx)
         return new_data, new_timestamps
 
-    def load_data(self, T: int) -> tuple[list[np.ndarray], list[np.ndarray]]:
+    def load_data(self, T: int) -> 'tuple[list[np.ndarray], list[np.ndarray]]':
         data_all = []
         timestamp_all = []
         for data_path in self.DATA_PATHS:

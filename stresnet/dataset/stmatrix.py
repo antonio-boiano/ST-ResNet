@@ -52,7 +52,7 @@ class STMatrix:
         trend_interval: int = 7,
         map_height: int = 32,
         map_width: int = 32,
-    ) -> dict[str, np.ndarray]:
+    ) -> 'dict[str, np.ndarray]':
         start_t = max(
             [
                 len_closeness,
