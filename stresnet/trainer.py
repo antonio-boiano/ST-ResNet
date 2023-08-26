@@ -45,6 +45,12 @@ class Trainer:
         y_ = self._inverse_transform(y)
         rmse = mean_squared_error(x_, y_, squared=False)
         return rmse
+    
+    def _loss_print(self, x: torch.Tensor, y: torch.Tensor) -> float:
+        x_ = x
+        y_ = y
+        rmse = mean_squared_error(x_, y_, squared=False)
+        return rmse
 
     def fit(self, model: nn.Module):
         for epoch in range(self.epochs):
@@ -77,6 +83,7 @@ class Trainer:
     def evaluate(self, model: nn.Module, epoch: Optional[int] = None) -> None:
         model.eval()
         losses = AverageMeter("valid_loss")
+        losses_print = AverageMeter("valid_loss")
 
         for va_data in tqdm(self.valid_loader):
             va_X = [d.to(self.device) for d in va_data[:-1]]
@@ -86,9 +93,13 @@ class Trainer:
 
             # inversed RMSE
             rmse = self._inverse_loss(out, va_y)
+            
+            print_rmse = self._loss_print(out, va_y)
+            
             losses.update(rmse)
+            losses_print.update(print_rmse)
 
-        self.logger.info(f"loss: {losses.avg}")
+        self.logger.info(f"loss: {losses_print.avg}")
 
         if epoch is not None:
             if losses.avg <= self.best_loss:
