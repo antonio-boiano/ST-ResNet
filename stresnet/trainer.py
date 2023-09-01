@@ -12,15 +12,15 @@ from tqdm import tqdm
 
 class Trainer:
     def __init__(
-        self,
-        epochs: int,
-        train_loader: DataLoader,
-        valid_loader: DataLoader,
-        criterion,
-        optimizer,
-        scaler,
-        device,
-        save_dir,
+            self,
+            epochs: int,
+            train_loader: DataLoader,
+            valid_loader: DataLoader,
+            criterion,
+            optimizer,
+            scaler,
+            device,
+            save_dir,
     ):
         self.epochs = epochs
         self.train_loader, self.valid_loader = train_loader, valid_loader
@@ -45,10 +45,10 @@ class Trainer:
         y_ = self._inverse_transform(y)
         rmse = mean_squared_error(x_, y_, squared=False)
         return rmse
-    
+
     def _loss_print(self, x: torch.Tensor, y: torch.Tensor) -> float:
-        x_ = x
-        y_ = y
+        x_ = self.__to_numpy(x)
+        y_ = self.__to_numpy(y)
         rmse = mean_squared_error(x_, y_, squared=False)
         return rmse
 
@@ -93,12 +93,13 @@ class Trainer:
 
             # inversed RMSE
             rmse = self._inverse_loss(out, va_y)
-            
+
             print_rmse = self._loss_print(out, va_y)
-            
+
             losses.update(rmse)
             losses_print.update(print_rmse)
 
+        self.logger.info(f"loss: {losses.avg}")
         self.logger.info(f"loss: {losses_print.avg}")
 
         if epoch is not None:
