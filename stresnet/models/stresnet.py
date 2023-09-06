@@ -79,7 +79,7 @@ class STResNet(nn.Module):
         time_net.add_module(
             "Conv2",
             nn.Conv2d(
-                in_channels=64, out_channels=2, kernel_size=3, stride=1, padding="same"
+                in_channels=64, out_channels=self.nb_flow, kernel_size=3, stride=1, padding="same"
             ),
         )
         return time_net

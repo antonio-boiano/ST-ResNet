@@ -49,6 +49,12 @@ class Trainer:
     def _loss_print(self, x: torch.Tensor, y: torch.Tensor) -> float:
         x_ = self.__to_numpy(x)
         y_ = self.__to_numpy(y)
+
+        #TODO:
+        #Togliere -1
+        #Normalizzare tra 0 e 1
+        #Normalizzare tra 0 e 1 il modello
+
         rmse = mean_squared_error(x_, y_, squared=False)
         return rmse
 
@@ -66,6 +72,10 @@ class Trainer:
 
                     self.optimizer.zero_grad()
                     out = model(*tr_X)
+
+                    # reshape the target tensor to have the same shape as the output tensor
+                    tr_y = tr_y.unsqueeze(1).expand_as(out)
+
                     # RMSE
                     loss = self.criterion(out, tr_y).sqrt()
                     loss.backward()
@@ -81,6 +91,10 @@ class Trainer:
 
     @torch.no_grad()
     def evaluate(self, model: nn.Module, epoch: Optional[int] = None) -> None:
+        def __to_numpy(x: torch.Tensor) -> np.ndarray:
+            x_ = x.cpu().detach().numpy()
+            return x_
+
         model.eval()
         losses = AverageMeter("valid_loss")
         losses_print = AverageMeter("valid_loss")
@@ -91,6 +105,8 @@ class Trainer:
 
             out = model(*va_X)
 
+            out_np = __to_numpy(out)
+            va_y_np = __to_numpy(va_y)
             # inversed RMSE
             rmse = self._inverse_loss(out, va_y)
 
