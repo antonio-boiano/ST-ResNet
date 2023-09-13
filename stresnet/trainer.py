@@ -8,7 +8,7 @@ from sklearn.metrics import mean_squared_error
 from stresnet.utils import AverageMeter, get_logger
 from torch.utils.data import DataLoader
 from tqdm import tqdm
-
+import pickle
 
 class Trainer:
     def __init__(
@@ -47,15 +47,16 @@ class Trainer:
         return rmse
 
     def _loss_print(self, x: torch.Tensor, y: torch.Tensor) -> float:
-        x_ = self.__to_numpy(x)
-        y_ = self.__to_numpy(y)
+        x_ = self._inverse_transform(x)
+        y_ = self._inverse_transform(y)
+        mask = (y_ != 0)
+        y_min = np.min(y_[mask])
+        y_max = np.max(y_[mask])
 
-        #TODO:
-        #Togliere -1
-        #Normalizzare tra 0 e 1
-        #Normalizzare tra 0 e 1 il modello
+        x_new = (x_[mask]-y_min)/(y_max-y_min)
+        y_new = (y_[mask]-y_min)/(y_max-y_min)
 
-        rmse = mean_squared_error(x_, y_, squared=False)
+        rmse = mean_squared_error(x_new, y_new, squared=False)
         return rmse
 
     def fit(self, model: nn.Module):
@@ -88,6 +89,12 @@ class Trainer:
                     pbar.set_postfix(loss=losses.value)
 
             self.evaluate(model, epoch)
+
+#TODO:
+    #Paper structure:
+        # - Intor
+        # Analisi qualitative Tempo e paszio
+        # Predizione
 
     @torch.no_grad()
     def evaluate(self, model: nn.Module, epoch: Optional[int] = None) -> None:
@@ -122,3 +129,7 @@ class Trainer:
             if losses.avg <= self.best_loss:
                 self.best_acc = losses.avg
                 torch.save(model.state_dict(), Path(self.save_dir).joinpath("best.pth"))
+                pickle_path = str(Path(self.save_dir).joinpath("objs.pkl"))
+                # Saving the objects:
+                with open(pickle_path, 'wb') as f:  # Python 3: open(..., 'wb')
+                    pickle.dump([out_np, va_y_np], f)
