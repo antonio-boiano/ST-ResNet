@@ -13,9 +13,13 @@ def make_parser():
     return parser.parse_args()
 
 args = make_parser()
-var = args.config_file
+var = args.config_file.split(',')
 
-print(var)
+execute_cmd = ""
+for elem in var:
+    print(elem)
+    name = elem.split('/')[-1]
+    execute_cmd = execute_cmd + sys.executable + " run.py "+elem+" >res_"+str(name)+".txt && "
+execute_cmd = execute_cmd[:-3]
 
-os.system("nohup sh -c '" +
-          sys.executable + " run.py "+var+" >res1.txt" +"' &")
+os.system("nohup sh -c '" +execute_cmd+"' &")

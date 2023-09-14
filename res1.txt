@@ -1,1 +1,1 @@
-SEED: 0, DEVICE: cpu, nb_resunit: 8, closeness: 12,  period: 4, trend: 4
+SEED: 0, DEVICE: cpu, nb_resunit: 24, closeness: 12,  period: 4, trend: 4
