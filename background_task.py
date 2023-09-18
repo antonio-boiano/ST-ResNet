@@ -20,6 +20,11 @@ for elem in var:
     print(elem)
     name = elem.split('/')[-1]
     execute_cmd = execute_cmd + sys.executable + " run.py "+elem+" >res_"+str(name)+".txt && "
-execute_cmd = execute_cmd[:-3]
 
-os.system("nohup sh -c '" +execute_cmd+"' &")
+execute_cmd = execute_cmd[:-3]
+print(execute_cmd)
+os.system("nohup sh -c '" + execute_cmd + "' &")
+
+
+
+
